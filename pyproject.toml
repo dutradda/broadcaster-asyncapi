@@ -64,6 +64,7 @@ subscriber = [
 ]
 docs = [
     'apidaora',
+    'apischema',
     'jinja2',
     'markdown',
     'uvicorn'

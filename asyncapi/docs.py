@@ -21,11 +21,11 @@ from apidaora import (
     javascript,
     route,
 )
+from apischema.json_schema import serialization_schema
 
 from asyncapi import Operation, Specification
 from asyncapi import docs_filters as jinja_filters
 from asyncapi.builder import build_spec_from_path
-from asyncapi.schema import type_as_jsonschema
 from asyncapi.specification_v2_0_0 import as_camel_case
 
 
@@ -115,7 +115,7 @@ def spec_asjson(spec: Specification) -> Dict[str, Any]:
         if message_type.payload:
             json_spec['components']['messages'][message_name][
                 'payload'
-            ] = type_as_jsonschema(message_type.payload)
+            ] = serialization_schema(message_type.payload)
 
             if message_type.name:
                 json_spec_messages[message_type.name] = message_name
@@ -164,7 +164,7 @@ def set_operation_message(
         }
 
     elif operation and operation.message and operation.message.payload:
-        operation_dict['message']['payload'] = type_as_jsonschema(
+        operation_dict['message']['payload'] = serialization_schema(
             operation.message.payload
         )
 
@@ -201,7 +201,8 @@ def _spec_asjson(generic_value: Any) -> Any:
 
 
 def build_spec_docs_controllers(
-    spec: Specification, html_params: Dict[str, str],
+    spec: Specification,
+    html_params: Dict[str, str],
 ) -> List[RoutedControllerTypeHint]:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = partial(os.path.join, current_dir, 'docs-template', 'template')
